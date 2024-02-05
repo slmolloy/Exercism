@@ -163,13 +163,13 @@ void dup() {
     var forth = Forth();
     forth.evaluate('1 dup');
     expect(forth.stack, equals(<int>[1, 1]));
-  }, skip: true);
+  }, skip: false);
 
   test('copies the top value on the stack', () {
     var forth = Forth();
     forth.evaluate('1 2 dup');
     expect(forth.stack, equals(<int>[1, 2, 2]));
-  }, skip: true);
+  }, skip: false);
 
   test('errors if there is nothing on the stack', () {
     var forth = Forth();
@@ -177,7 +177,7 @@ void dup() {
       () => forth.evaluate('dup'),
       throwsEmptyStack,
     );
-  }, skip: true);
+  }, skip: false);
 }
 
 void drop() {
@@ -185,13 +185,13 @@ void drop() {
     var forth = Forth();
     forth.evaluate('1 drop');
     expect(forth.stack, equals(<int>[]));
-  }, skip: true);
+  }, skip: false);
 
   test('removes the top value on the stack if it is not the only one', () {
     var forth = Forth();
     forth.evaluate('1 2 drop');
     expect(forth.stack, equals(<int>[1]));
-  }, skip: true);
+  }, skip: false);
 
   test('errors if there is nothing on the stack', () {
     var forth = Forth();
@@ -199,7 +199,7 @@ void drop() {
       () => forth.evaluate('drop'),
       throwsEmptyStack,
     );
-  }, skip: true);
+  }, skip: false);
 }
 
 void swap() {
@@ -207,13 +207,13 @@ void swap() {
     var forth = Forth();
     forth.evaluate('1 2 swap');
     expect(forth.stack, equals(<int>[2, 1]));
-  }, skip: true);
+  }, skip: false);
 
   test('swaps the top two values on the stack if they are not the only ones', () {
     var forth = Forth();
     forth.evaluate('1 2 3 swap');
     expect(forth.stack, equals(<int>[1, 3, 2]));
-  }, skip: true);
+  }, skip: false);
 
   test('errors if there is nothing on the stack', () {
     var forth = Forth();
@@ -221,7 +221,7 @@ void swap() {
       () => forth.evaluate('swap'),
       throwsEmptyStack,
     );
-  }, skip: true);
+  }, skip: false);
 
   test('errors if there is only one value on the stack', () {
     var forth = Forth();
@@ -229,7 +229,7 @@ void swap() {
       () => forth.evaluate('1 swap'),
       throwsEmptyStack,
     );
-  }, skip: true);
+  }, skip: false);
 }
 
 void over() {
@@ -237,13 +237,13 @@ void over() {
     var forth = Forth();
     forth.evaluate('1 2 over');
     expect(forth.stack, equals(<int>[1, 2, 1]));
-  }, skip: true);
+  }, skip: false);
 
   test('copies the second element if there are more than two', () {
     var forth = Forth();
     forth.evaluate('1 2 3 over');
     expect(forth.stack, equals(<int>[1, 2, 3, 2]));
-  }, skip: true);
+  }, skip: false);
 
   test('errors if there is nothing on the stack', () {
     var forth = Forth();
@@ -251,7 +251,7 @@ void over() {
       () => forth.evaluate('over'),
       throwsEmptyStack,
     );
-  }, skip: true);
+  }, skip: false);
 
   test('errors if there is only one value on the stack', () {
     var forth = Forth();
@@ -259,7 +259,7 @@ void over() {
       () => forth.evaluate('1 over'),
       throwsEmptyStack,
     );
-  }, skip: true);
+  }, skip: false);
 }
 
 void userDefinedWords() {
@@ -268,14 +268,14 @@ void userDefinedWords() {
     forth.evaluate(': dup-twice dup dup ;');
     forth.evaluate('1 dup-twice');
     expect(forth.stack, equals(<int>[1, 1, 1]));
-  }, skip: true);
+  }, skip: false);
 
   test('execute in the right order', () {
     var forth = Forth();
     forth.evaluate(': countup 1 2 3 ;');
     forth.evaluate('countup');
     expect(forth.stack, equals(<int>[1, 2, 3]));
-  }, skip: true);
+  }, skip: false);
 
   test('can override other user-defined words', () {
     var forth = Forth();
@@ -283,21 +283,21 @@ void userDefinedWords() {
     forth.evaluate(': foo dup dup ;');
     forth.evaluate('1 foo');
     expect(forth.stack, equals(<int>[1, 1, 1]));
-  }, skip: true);
+  }, skip: false);
 
   test('can override built-in words', () {
     var forth = Forth();
     forth.evaluate(': swap dup ;');
     forth.evaluate('1 swap');
     expect(forth.stack, equals(<int>[1, 1]));
-  }, skip: true);
+  }, skip: false);
 
   test('can override built-in operators', () {
     var forth = Forth();
     forth.evaluate(': + * ;');
     forth.evaluate('3 4 +');
     expect(forth.stack, equals(<int>[12]));
-  }, skip: true);
+  }, skip: false);
 
   test('can use different words with the same name', () {
     var forth = Forth();
@@ -306,7 +306,7 @@ void userDefinedWords() {
     forth.evaluate(': foo 6 ;');
     forth.evaluate('bar foo');
     expect(forth.stack, equals(<int>[5, 6]));
-  }, skip: true);
+  }, skip: false);
 
   test('can define word that uses word with the same name', () {
     var forth = Forth();
@@ -314,7 +314,7 @@ void userDefinedWords() {
     forth.evaluate(': foo foo 1 + ;');
     forth.evaluate('foo');
     expect(forth.stack, equals(<int>[11]));
-  }, skip: true);
+  }, skip: false);
 
   test('cannot redefine non-negative numbers', () {
     var forth = Forth();
@@ -322,7 +322,7 @@ void userDefinedWords() {
       () => forth.evaluate(': 1 2 ;'),
       throwsInvalidDefinition,
     );
-  }, skip: true);
+  }, skip: false);
 
   test('cannot redefine negative numbers', () {
     var forth = Forth();
@@ -330,7 +330,7 @@ void userDefinedWords() {
       () => forth.evaluate(': -1 2 ;'),
       throwsInvalidDefinition,
     );
-  }, skip: true);
+  }, skip: false);
 
   test('errors if executing a non-existent word', () {
     var forth = Forth();
@@ -338,7 +338,7 @@ void userDefinedWords() {
       () => forth.evaluate('foo'),
       throwsA(isA<Exception>().having((e) => e.toString(), 'message', 'Exception: Unknown command')),
     );
-  }, skip: true);
+  }, skip: false);
 
   test('only defines locally', () {
     var first = Forth();
@@ -352,7 +352,7 @@ void userDefinedWords() {
           <int>[0],
           <int>[2]
         ]));
-  }, skip: true);
+  }, skip: false);
 }
 
 void caseInsensitivity() {
