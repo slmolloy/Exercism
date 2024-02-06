@@ -4,13 +4,9 @@ class Forth {
   Map<String, String> _userDefinedWords = {};
 
   void evaluate(String input) {
+    input = input.toLowerCase();
     if (input.isUserDefinedWord) {
-      final trimed = input.substring(2, input.length - 2); // remove ':' and ';'
-      final commandEnd = trimed.indexOf(' ');
-      final command = trimed.substring(0, commandEnd);
-      final definition = trimed.substring(commandEnd + 1);
-      print('command: "${command}", definition: "${definition}"');
-      _userDefinedWords[command] = definition;
+      _evaluateUserDefinedWord(input);
     } else {
       final words = input.split(' ');
       for (final word in words) {
@@ -22,12 +18,31 @@ class Forth {
           _executeAritmetic(word);
         } else if (word.isCommand) {
           _executeCommand(word);
+        } else {
+          throw Exception('Unknown command');
         }
       }
     }
   }
 
   bool _isUserDefinedWord(String word) => _userDefinedWords.containsKey(word);
+
+  void _evaluateUserDefinedWord(String input) {
+    final userDefined = input.split(' ');
+    final command = userDefined[1];
+    if (command.isNumber) {
+      throw Exception('Invalid definition');
+    }
+
+    final expanded = userDefined.getRange(2, userDefined.length - 1).map((e) {
+      if (_isUserDefinedWord(e)) {
+        return _userDefinedWords[e]!;
+      } else {
+        return e;
+      }
+    }).join(' ');
+    _userDefinedWords[command] = expanded;
+  }
 
   void _executeUserDefinedWord(String word) {
     final definition = _userDefinedWords[word];
@@ -87,11 +102,7 @@ class Forth {
 extension on String {
   bool get isNumber => int.tryParse(this) != null || this[0] == '-' && int.tryParse(substring(1)) != null;
   bool get isArithmetic => this == '+' || this == '-' || this == '*' || this == '/';
-  bool get isCommand =>
-      this.toLowerCase() == 'dup' ||
-      this.toLowerCase() == 'drop' ||
-      this.toLowerCase() == 'swap' ||
-      this.toLowerCase() == 'over';
+  bool get isCommand => this == 'dup' || this == 'drop' || this == 'swap' || this == 'over';
   bool get isUserDefinedWord => this.startsWith(': ') && this.endsWith(' ;');
 }
 
@@ -100,21 +111,8 @@ class Stack<E> {
   List<E> get list => _list;
 
   void push(E value) => _list.add(value);
-
-  E pop() {
-    if (_list.isEmpty) {
-      throw Exception('Stack empty');
-    }
-    return _list.removeLast();
-  }
-
-  E get peek {
-    if (_list.isEmpty) {
-      throw Exception('Stack empty');
-    }
-    return _list.last;
-  }
-
+  E pop() => _list.isEmpty ? throw Exception('Stack empty') : _list.removeLast();
+  E get peek => _list.isEmpty ? throw Exception('Stack empty') : _list.last;
   bool get isEmpty => _list.isEmpty;
   bool get isNotEmpty => _list.isNotEmpty;
 
