@@ -16,22 +16,22 @@ void main() {
     test('single letter identical strands', () {
       final result = hamming.distance('A', 'A');
       expect(result, equals(0));
-    }, skip: true);
+    }, skip: false);
 
     test('single letter different strands', () {
       final result = hamming.distance('G', 'T');
       expect(result, equals(1));
-    }, skip: true);
+    }, skip: false);
 
     test('long identical strands', () {
       final result = hamming.distance('GGACTGAAATCTG', 'GGACTGAAATCTG');
       expect(result, equals(0));
-    }, skip: true);
+    }, skip: false);
 
     test('long different strands', () {
       final result = hamming.distance('GGACGGATTCTG', 'AGGACGGATTCT');
       expect(result, equals(9));
-    }, skip: true);
+    }, skip: false);
 
     test('disallow first strand longer', () {
       expect(() => hamming.distance('AATG', 'AAA'), throwsA(mustEqual));
