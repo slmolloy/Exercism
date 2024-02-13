@@ -1,9 +1,7 @@
 class Raindrops {
+  Map<String, int> rainMap = {"Pling": 3, "Plang": 5, "Plong": 7};
   String convert(int number) {
-    var result = '';
-    if (number % 3 == 0) result += 'Pling';
-    if (number % 5 == 0) result += 'Plang';
-    if (number % 7 == 0) result += 'Plong';
-    return result.isEmpty ? number.toString() : result;
+    final result = rainMap.keys.where((key) => number % rainMap[key]! == 0).join();
+    return result.isNotEmpty ? result : number.toString();
   }
 }
